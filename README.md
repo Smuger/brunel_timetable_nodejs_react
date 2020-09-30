@@ -2,10 +2,10 @@
 
 ```javascript
 cd server
-yarn install
+npm install
 cd ..
-yarn install
-yarn start
+npm install
+npm start
 ```
 
 Open [http://localhost:5000](http://localhost:5000) to view it in the browser.
