@@ -1,9 +1,7 @@
 ## To run this project execute following commands in order
 
 ```javascript
-cd server
-npm install
-cd ..
+
 npm install
 npm start
 ```
