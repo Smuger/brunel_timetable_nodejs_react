@@ -1,7 +1,7 @@
 const path = require("path");
 const express = require("express");
 const app = express(); // create express app
-
+var cors = require('cors');
 const tough = require("tough-cookie");
 const cheerio = require("cheerio");
 const axios = require("axios");
@@ -12,6 +12,7 @@ const axiosCookieJarSupport = require("axios-cookiejar-support").default;
 // add middlewares
 app.use(express.static(path.join(__dirname, "..", "build")));
 app.use(express.static("public"));
+app.use(cors());
 
 // Get timetable data
 axiosCookieJarSupport(axios);
