@@ -62,8 +62,9 @@ li {
 }
 
 .day-header {
-  margin: 10px 10px;
+  margin: 10px auto;
   color: #fff;
+  max-width: 300px;
 }
 
 li:last-child {
