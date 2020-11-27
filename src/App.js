@@ -18,7 +18,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fetch(`http://kwietniewski.ml/timetable/`)
+    fetch(`https://kwietniewski.ml/timetable/`)
         .then(response => response.json())
         .then(json => this.setState(
           {monday: json.Monday,tuesday: json.Tuesday,wednesday: json.Wednesday,thursday: json.Thursday,friday: json.Friday, allData: true}))
