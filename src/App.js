@@ -1,142 +1,70 @@
-import React from "react";
-import axios from "axios";
-import "./styles.css";
-import _ from "lodash";
+//import './App.css';
+import React, {Component} from 'react'
+import Card from './components/Card'
+import './styles/Card.css'
 
-export default class App extends React.Component {
-  state = {
-    jsonValue: [],
-    datarecords: [],
-    datacolumns: [],
-    datarecordsMonday: [],
-    datarecordsTuesday: [],
-    datarecordsWednesday: [],
-    datarecordsThursday: [],
-    datarecordsFriday: [],
-  };
+class App extends Component {
+  constructor(props){
+    super(props)
 
-  componentWillMount() {
-    axios.get("/timetable").then((response) => {
-      this.setState({
-        datarecords: response.data,
-        datarecordsMonday: response.data.Monday,
-        datarecordsTuesday: response.data.Tuesday,
-        datarecordsWednesday: response.data.Wednesday,
-        datarecordsThursday: response.data.Thursday,
-        datarecordsFriday: response.data.Friday,
-      });
-
-      this.extractColumnNames();
-    });
-  }
-
-  extractColumnNames() {
-    const datacolumns = this.state.datacolumns;
-
-    const firstrecord = _.keys(this.state.datarecords.Monday[0]); // <-- This is okey because each day follows the same data structure [6 attributes]
-    this.setState({ datacolumns: firstrecord });
-  }
-
-  displayRecords(key, day) {
-    const datacolumns = this.state.datacolumns;
-    return datacolumns.map((each_col) =>
-      this.displayRecordName(each_col, key, day)
-    );
-  }
-
-  displayRecordName(colname, key, day) {
-    const datarecords = this.state.datarecords;
-
-    var record = "";
-    switch (day) {
-      case 0:
-        record = datarecords.Monday[key];
-        break;
-
-      case 1:
-        record = datarecords.Tuesday[key];
-        break;
-
-      case 2:
-        record = datarecords.Wednesday[key];
-        break;
-
-      case 3:
-        record = datarecords.Thursday[key];
-        break;
-
-      case 4:
-        record = datarecords.Friday[key];
-        break;
+    this.state = {
+      monday: [],
+      tuesday: [],
+      wednesday: [],
+      thursday: [],
+      friday: [],
+      allData: false
     }
-    return <th>{record[colname]}</th>;
   }
 
-  render() {
-    const datarecords = this.state.datarecords;
-    const datarecordsMonday = this.state.datarecordsMonday;
-    const datarecordsTuesday = this.state.datarecordsTuesday;
-    const datarecordsWednesday = this.state.datarecordsWednesday;
-    const datarecordsThursday = this.state.datarecordsThursday;
-    const datarecordsFriday = this.state.datarecordsFriday;
-    let button;
+  componentDidMount() {
+    fetch(`http://kwietniewski.ml/timetable/`)
+        .then(response => response.json())
+        .then(json => this.setState(
+          {monday: json.Monday,tuesday: json.Tuesday,wednesday: json.Wednesday,thursday: json.Thursday,friday: json.Friday, allData: true}))
+  }
 
-    if (datarecords.length === 0) {
-      button = "";
-    } else {
-    }
-
+  render(){
+    const allData = this.state.allData;
     return (
-      <div>
-        {datarecords.length === 0 && (
-          <div className="text-center">
-            <h2>Please wait...</h2>
-          </div>
-        )}
-        <div className="container">
-          <div className="row">
-            <table className="table table-bordered">
-              <tbody>
-                <h2>Monday</h2>
-                {datarecordsMonday &&
-                  datarecordsMonday.map((each_datarecord, recordindex) => (
-                    <tr key={each_datarecord.startTime}>
-                      {this.displayRecords(recordindex, 0)}
-                    </tr>
-                  ))}
-                <h2>Tuesday</h2>
-                {datarecordsTuesday &&
-                  datarecordsTuesday.map((each_datarecord, recordindex) => (
-                    <tr key={each_datarecord.startTime}>
-                      {this.displayRecords(recordindex, 1)}
-                    </tr>
-                  ))}
-                <h2>Wednesday</h2>
-                {datarecordsWednesday &&
-                  datarecordsWednesday.map((each_datarecord, recordindex) => (
-                    <tr key={each_datarecord.startTime}>
-                      {this.displayRecords(recordindex, 2)}
-                    </tr>
-                  ))}
-                <h2>Thursday</h2>
-                {datarecordsThursday &&
-                  datarecordsThursday.map((each_datarecord, recordindex) => (
-                    <tr key={each_datarecord.startTime}>
-                      {this.displayRecords(recordindex, 3)}
-                    </tr>
-                  ))}
-                <h2>Friday</h2>
-                {datarecordsFriday &&
-                  datarecordsFriday.map((each_datarecord, recordindex) => (
-                    <tr key={each_datarecord.startTime}>
-                      {this.displayRecords(recordindex, 4)}
-                    </tr>
-                  ))}
-              </tbody>
-            </table>{" "}
-          </div>{" "}
-        </div>{" "}
-      </div>
-    );
+      <ul>
+        <h1 className="card-container">
+          { allData ? '' : 'Please wait...' }
+        </h1>
+        <h1 className="day-header">Monday</h1>
+        {this.state.monday.map((lesson, index) => {
+          return (
+            <Card code={lesson.code} startTime={lesson.startTime} endTime={lesson.endTime} location={lesson.location} weeks={lesson.weeks} leader={lesson.leader} key={index} />
+          )
+        })}
+        <h1 className="day-header">Tuesday</h1>
+        {this.state.tuesday.map((lesson, index) => {
+          return (
+            <Card code={lesson.code} startTime={lesson.startTime} endTime={lesson.endTime} location={lesson.location} weeks={lesson.weeks} leader={lesson.leader} key={index} />
+          )
+        })}
+        <h1 className="day-header">Wednesday</h1>
+        {this.state.wednesday.map((lesson, index) => {
+          return (
+            <Card code={lesson.code} startTime={lesson.startTime} endTime={lesson.endTime} location={lesson.location} weeks={lesson.weeks} leader={lesson.leader} key={index} />
+          )
+        })}
+        <h1 className="day-header">Thursday</h1>
+        {this.state.thursday.map((lesson, index) => {
+          return (
+            <Card code={lesson.code} startTime={lesson.startTime} endTime={lesson.endTime} location={lesson.location} weeks={lesson.weeks} leader={lesson.leader} key={index} />
+          )
+        })}
+        <h1 className="day-header">Friday</h1>
+        {this.state.friday.map((lesson, index) => {
+          return (
+            <Card code={lesson.code} startTime={lesson.startTime} endTime={lesson.endTime} location={lesson.location} weeks={lesson.weeks} leader={lesson.leader} key={index} />
+          )
+        })}
+
+      </ul>
+    )
   }
 }
+
+export default App;
