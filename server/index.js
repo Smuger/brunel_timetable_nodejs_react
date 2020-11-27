@@ -6,7 +6,8 @@ const tough = require("tough-cookie");
 const cheerio = require("cheerio");
 const axios = require("axios");
 const qs = require("qs");
-
+const https = require('https');
+const fs = require('fs');
 const axiosCookieJarSupport = require("axios-cookiejar-support").default;
 
 // add middlewares
@@ -144,6 +145,15 @@ app.get("/timetable", function (req, res) {
 app.use((req, res, next) => {
   res.sendFile(path.join(__dirname, "..", "build", "index.html"));
 });
+
+// serve the API with signed certificate on 443 (SSL/HTTPS) port
+const httpsServer = https.createServer({
+  key: fs.readFileSync('/etc/letsencrypt/live/kwietniewski.ml/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/kwietniewski.ml/fullchain.pem'),
+}, app);
+
+// start express server on port 443
+httpsServer.listen(443, () => {});
 
 // start express server on port 5000
 app.listen(5000, () => {});
